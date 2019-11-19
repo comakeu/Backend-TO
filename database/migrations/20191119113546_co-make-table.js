@@ -18,8 +18,8 @@ exports.up = function(knex) {
     issues.increments();
     issues.text('description')
     .notNullable();
-    issues.float('location_lat');
-    issues.float('location_long');
+    issues.float('latitude');
+    issues.float('longitude');
     issues.integer('user_id')
     .unsigned()
     .notNullable()
@@ -27,10 +27,9 @@ exports.up = function(knex) {
     .inTable('users')
     .onUpdate('CASCADE')
     .onDelete('CASCADE');
-    issues.string('img_stretch');
+    issues.string('imgURL').notNullable();
   })
   .createTable('votes', votes => {
-    votes.increments();
     votes.integer('user_id')
     .unsigned()
     .notNullable()
@@ -45,6 +44,7 @@ exports.up = function(knex) {
     .inTable('issues')
     .onUpdate('CASCADE')
     .onDelete('CASCADE');
+    votes.primary(['user_id', 'issues_id'])
   })
 };
 
