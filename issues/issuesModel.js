@@ -5,15 +5,24 @@ module.exports = {
   getById,
   add,
   update,
-  remove
+  remove,
+  getIssueVotes
 }
 
 function get() {
-  return db('issues')
+ return db('issues as i')
+  .count('v.user_id', { as: 'votes' })
+  .from('issues as i')
+  .join('users as u', 'i.user_id', 'u.id')
+  .leftJoin('votes as v', 'i.id', 'v.issues_id')
+  .select('i.*', 'u.first_name', 'u.last_name')
+  .groupBy('i.id') 
+  
 }
 
 function getById(id) {
-  return db('issues')
+  return db('issues as i')
+  
   .where({ id})
   .first();
 }
@@ -36,4 +45,11 @@ function remove(id) {
 return db('issues')
 .where( 'id', id )
 .del()
+}
+
+function getIssueVotes(issueId) {
+  return db('votes as v')
+  .join('users as u', 'u.id', 'v.user_id')
+  .select('u.first_name', 'u.last_name')
+  .where('v.issues_id', issueId)
 }

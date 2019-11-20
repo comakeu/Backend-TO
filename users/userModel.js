@@ -46,3 +46,4 @@ function getUserIssues(userId) {
   .select('i.*')
   .where('i.user_id', userId)
 }
+
