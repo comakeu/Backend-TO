@@ -16,8 +16,7 @@ function get() {
   .join('users as u', 'i.user_id', 'u.id')
   .leftJoin('votes as v', 'i.id', 'v.issues_id')
   .select('i.*', 'u.first_name', 'u.last_name')
-  .groupBy('i.id') 
-  
+  .groupBy('i.id', 'u.first_name', 'u.last_name') 
 }
 
 function getById(id) {
