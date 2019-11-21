@@ -3,7 +3,10 @@ const db = require('../database/dbConfig');
 module.exports = {
   findBy,
   add,
-  findById
+  findById,
+  update,
+  remove,
+  getUserIssues,
 }
 
 function findBy(filter) {
@@ -24,3 +27,23 @@ function add(users) {
     return findById(id)
   })
 }
+
+function update(id, changes) {
+  return db('users')
+  .where({ id})
+  .update(changes)
+}
+
+function remove(id) {
+  return db('users')
+  .where('id', id)
+  .del();
+}
+
+function getUserIssues(userId) {
+  return db('issues as i')
+  .join('users as u', 'u.id', 'i.user_id')
+  .select('i.*')
+  .where('i.user_id', userId)
+}
+
