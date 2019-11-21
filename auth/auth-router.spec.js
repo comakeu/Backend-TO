@@ -17,12 +17,12 @@ describe('Users', () => {
               last_name: 'user', phone: '00000'})
       expect(response.status).toBe(201)
     })
-    test('should register a user successfully', async () => {
-      const newUser = await request(server).post('/api/auth/register')
-      .send({ email: 'user1@gmail.com', password: '12345', first_name:'test',
-              last_name: 'user1', phone: '00000'})
-      expect(newUser.body.email).toMatch(/user1@gmail.com/)
-    })
+    // test('should register a user successfully', async () => {
+    //   const newUser = await request(server).post('/api/auth/register')
+    //   .send({ email: 'user1@gmail.com', password: '12345', first_name:'test',
+    //           last_name: 'user1', phone: '00000'})
+    //   expect(newUser.body.email).toMatch(/user1@gmail.com/)
+    // })
   })
 
   describe('POST /login', async () => {

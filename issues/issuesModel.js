@@ -22,8 +22,7 @@ function get() {
 
 function getById(id) {
   return db('issues as i')
-  
-  .where({ id})
+  .where({ id })
   .first();
 }
 

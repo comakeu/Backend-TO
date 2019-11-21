@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const userDb = require('./userModel');
-const authenticate = require('../auth/authenticate-middleware');
+const restricted = require('../auth/authenticate-middleware');
 
 //middlewares
 
@@ -35,30 +35,15 @@ function validateUser(req, res, next) {
   } else {
     next();
   }
-};
-
-function validateIssue(req, res, next) {
-  if(!Object.keys(req.body).length) {
-    res.status(400).json({
-      message: 'missing issue data'
-    })
-  } else if (!req.body.description || !req.body.latitude || !req.body.longitude
-   || !req.body.imgURL) {
-    res.status(400).json({
-      message: 'Missing required text field'
-    })
-  } else {
-    next()
-  }
 }
 
 
 //Endpoints
-router.get('/:id',[authenticate, validateUserId], (req, res) => {
+router.get('/:id',[restricted, validateUserId], (req, res) => {
   res.json(req.user)
 });
 
-router.put('/:id', [authenticate, validateUserId, validateUser], (req, res) => {
+router.put('/:id', [restricted, validateUserId, validateUser], (req, res) => {
   userDb.update(req.user.id, req.body)
   .then(updatedUser => {
     res.status(200).json({
@@ -72,7 +57,7 @@ router.put('/:id', [authenticate, validateUserId, validateUser], (req, res) => {
   });
 });
 
-router.delete('/:id', [authenticate, validateUserId], (req, res) => {
+router.delete('/:id', [restricted, validateUserId], (req, res) => {
   userDb.remove(req.user.id)
   .then(() => {
     res.status(200).json({
@@ -86,7 +71,7 @@ router.delete('/:id', [authenticate, validateUserId], (req, res) => {
   })
 })
 
-router.get('/:id/issues', [authenticate, validateUserId], (req, res) => {
+router.get('/:id/issues', [restricted, validateUserId], (req, res) => {
   userDb.getUserIssues(req.user.id)
   .then(issues => {
     res.status(200).json(issues)
