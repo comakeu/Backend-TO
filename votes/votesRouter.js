@@ -77,9 +77,9 @@ function checkDuplicates(req, res, next) {
 
 router.post('/', [restricted, validateVotes, validateIssuesId, validateUserId, checkDuplicates], (req, res)=> {
   votesDb.addVote(req.body)
-  .then(vote => {
+  .then(() => {
     res.status(201).json({
-      message: `${vote} successfully added`
+      message: `a vote successfully added`
     })
   })
   .catch(error => {
@@ -90,7 +90,7 @@ router.post('/', [restricted, validateVotes, validateIssuesId, validateUserId, c
 })
 
 router.delete('/:issue_id', [restricted, validateUserId, validateIssuesId], (req, res) => {
-  votesDb.removeVote(req.user.id)
+  votesDb.removeVote(req.params.user_id, req.params.issues_id)
   .then(() => {
     res.status(200).json({
       message: `Vote was deleted successfully`
