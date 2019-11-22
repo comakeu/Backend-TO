@@ -67,7 +67,7 @@ router.get('/:id/', validateIssueId, async (req,res)=> {
 })
 
 
-router.post('/', validateIssue, (req,res) => {
+router.post('/', [restriction, validateIssue], (req,res) => {
   IssuesDb.add(req.body)
   .then(() => {
     res.status(201).json({
