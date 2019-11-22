@@ -89,8 +89,8 @@ router.post('/', [restricted, validateVotes, validateIssuesId, validateUserId, c
   })
 })
 
-router.delete('/:issue_id', [restricted, validateUserId, validateIssuesId], (req, res) => {
-  votesDb.removeVote(req.params.user_id, req.params.issues_id)
+router.delete('/', [restricted, validateUserId, validateIssuesId], (req, res) => {
+  votesDb.removeVote(req.body)
   .then(() => {
     res.status(200).json({
       message: `Vote was deleted successfully`
