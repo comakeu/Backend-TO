@@ -8,6 +8,13 @@ beforeEach(async () => {
   await db('users').truncate()
 })
 
+const testUser = {
+  first_name: 'user',
+  last_name: 'test',
+  password: '12345',
+  phone: '001122'
+}
+
 describe('Users', () => {
 
   describe('POST /register', async () => {
@@ -17,12 +24,12 @@ describe('Users', () => {
               last_name: 'user', phone: '00000'})
       expect(response.status).toBe(201)
     })
-    // test('should register a user successfully', async () => {
-    //   const newUser = await request(server).post('/api/auth/register')
-    //   .send({ email: 'user1@gmail.com', password: '12345', first_name:'test',
-    //           last_name: 'user1', phone: '00000'})
-    //   expect(newUser.body.email).toMatch(/user1@gmail.com/)
-    // })
+    
+    test('should register a user', async ()=> {
+      const response = await request(server).post('/api/auth/register')
+      .send(testUser)
+      expect(response.body.email).toBe(testUser.email)
+    })
   })
 
   describe('POST /login', async () => {

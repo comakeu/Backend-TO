@@ -1,27 +1,57 @@
 const db = require('../database/dbConfig');
 const request = require('supertest');
 const server = require('../server');
-
+const generateToken = require('../auth/generateToken.js');
 const bcrypt = require('bcryptjs');
+
 
 beforeEach(async () => {
   await db('users').truncate()
 })
 
-describe('User', () => {
-  describe('GET /:id', () => {
+let token;
 
-    test('Returns json OK', () => {
-      return request(server).get('/api/user')
-      .expect('Content-Type', /json/)
-    });
+beforeAll((done) => {
+  token = generateToken('user');
+  done();
+})
 
-    test('Should return 200 status', () => {
-      return request(server).get('/api/user')
-      .set('authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijo2LCJlbWFpbCI6InVzZXIyQGdtYWlsLmNvbSIsImlhdCI6MTU3NDI4MjkzMiwiZXhwIjoxNTc0MzY5MzMyfQ.g4njZNIY2atgaXuhKmrooSv51nz-Hpe8jyPJ5N_a3ZY')
-      .then(res => {
-        expect(res.status).toBe(200)
+
+
+describe('users', () => {
+
+  describe('GET /api/user/:id',() => {
+
+    test('Returns status code 200 and JSON data', async () => {
+    const password = bcrypt.hashSync('12345', 10);
+    await db('users').insert({ email: 'user1@gmail.com', password: password, first_name: 'test', last_name: 'user', phone: '00000' })
+    const res = await request(server).post('/api/login').send({ email: 'user1@gmail.com', password: '12345'});  
+    const token = res.body.token;
+    return request(server).get('/api/user/4')
+      .set('Authorization', `${token}`)
+            .then(res => {
+              expect(res.type).toBe('application/json')
       })
     })
+    test('should respond with status code 200 OK', async () => {
+      const response = await request(server).get('/api/prisons');
+      expect(response.status).to
+    })
   })
+
+  // describe('PUT /api/user/:id endpoint', () => {
+  //   test('returns status 200 on edit of valid user',async () => {
+  //     const userObj = { id: 1, email: 'user1@gmail.com', password: '12345', first_name: 'test', last_name: 'user', phone: '00000' };
+  //     await request(server)
+  //     .post('/api/user')
+  //     .send(userObj)
+  //     .set('authorization', token);
+  //     const changes = {first_name: 'edittest'};
+  //     const response = await request(server).put('/api/user/1')
+  //     .send(changes).set('authorization', token);
+  //     const expected = { id: 1, email: 'user1@gmail.com', password: '12345', first_name: 'edittest', last_name: 'user', phone: '00000' }
+  //     // expect(response.status).toBe(200);
+  //     expect(response.body).toEqual(expected);
+  //   })
+  // })
 })
